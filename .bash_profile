@@ -8,6 +8,23 @@ crtndstry(){
 ./tools/crtndstry/crtndstry $1
 }
 
+fazboom(){ #fazboom <URLs>
+    URLs=$1
+    for url in `cat $URLs`; do ffuf -maxtime 180 -c -w ~/tools/SecLists/Fuzzing/fuzz-Bo0oM.txt -u `echo $url`/FUZZ > `echo $url | sed 's#://#_#g'`; done
+}
+
+fazspec(){ #fazspec <URLs> <WList>
+    URLs=$1
+    Wlist=$2
+    for url in `cat $URLs`; do ffuf -maxtime 180 -c -w `echo $Wlist` -u `echo $url`/FUZZ > `echo $url | sed 's#://#_#g'`; done
+}
+
+fazsearch(){
+    grep -l $1 * > .search
+    for den in `cat .search`; do echo `echo $den`/$1 | sed 's#_#://#g' ; grep $1 $den; done
+}
+
+
 ganama(){
 cd ~/tools/Ganama; python3 ganama.py -u $1; cd -
 cat ~/tools/Ganama/Reports/`echo $1 | cut -d'/' -f3`/file.txt | grep '.js' > files.list
@@ -44,9 +61,13 @@ ipinfo(){
 curl http://ipinfo.io/$1
 }
 
+ipa(){ #public ip
+curl ifconfig.co
+}
+
 
 #------ Tools ------
-dirsearch(){ runs dirsearch and takes host and extension as arguments
+dirsearch(){ #runs dirsearch and takes host and extension as arguments
 python3 ~/tools/dirsearch/dirsearch.py -u $1 -e $2 -t 50 -b 
 }
 
