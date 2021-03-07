@@ -24,14 +24,6 @@ fazsearch(){
     for den in `cat .search`; do echo `echo $den`/$1 | sed 's#_#://#g' ; grep $1 $den; done
 }
 
-
-ganama(){
-cd ~/tools/Ganama; python3 ganama.py -u $1; cd -
-cat ~/tools/Ganama/Reports/`echo $1 | cut -d'/' -f3`/file.txt | grep '.js' > files.list
-for url in `cat files.list`; do python3 ~/tools/LinkFinder/linkfinder.py -i $url -o cli >> outs; done
-cat outs
-}
-
 am(){ #runs amass passively and saves to json
 amass enum --passive -d $1 -json $1.json
 jq .name $1.json | sed "s/\"//g"| httprobe -c 60 | tee -a $1-domains.txt
